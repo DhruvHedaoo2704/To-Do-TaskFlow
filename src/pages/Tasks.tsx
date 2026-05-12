@@ -151,18 +151,39 @@ export default function Tasks() {
 
   const toggleComplete = async (task: Task) => {
     const newStatus = task.status === 'completed' ? 'pending' : 'completed';
-    await supabase
+    
+    // Update local state immediately
+    setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: newStatus } : t));
+    
+    // Update in Supabase
+    const { error } = await supabase
       .from('tasks')
       .update({ status: newStatus, completed_at: newStatus === 'completed' ? new Date().toISOString() : null })
       .eq('id', task.id);
-    addToast(newStatus === 'completed' ? 'Task completed!' : 'Task reopened', 'success');
-    fetchTasks();
+    
+    if (error) {
+      // Revert if there's an error
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: task.status } : t));
+      addToast('Failed to update task', 'error');
+    } else {
+      addToast(newStatus === 'completed' ? 'Task completed!' : 'Task reopened', 'success');
+    }
   };
 
   const deleteTask = async (id: string) => {
-    await supabase.from('tasks').delete().eq('id', id);
-    addToast('Task deleted', 'info');
-    fetchTasks();
+    // Update local state immediately
+    setTasks(prev => prev.filter(t => t.id !== id));
+    
+    // Delete from Supabase
+    const { error } = await supabase.from('tasks').delete().eq('id', id);
+    
+    if (error) {
+      // Revert if there's an error by re-fetching
+      fetchTasks();
+      addToast('Failed to delete task', 'error');
+    } else {
+      addToast('Task deleted', 'info');
+    }
   };
 
   const filtered = tasks.filter((t) => {
@@ -183,8 +204,8 @@ export default function Tasks() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-sm text-gray-500">{tasks.length} total tasks</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tasks</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{tasks.length} total tasks</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -205,7 +226,7 @@ export default function Tasks() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search tasks..."
-            className="w-full pl-12 pr-4 py-3 bg-white/80 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-slate-900/80 border border-purple-100 dark:border-purple-900/30 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all"
           />
         </div>
         <button
@@ -227,13 +248,13 @@ export default function Tasks() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden mb-6"
           >
-            <div className="bg-white/80 rounded-2xl p-4 border border-purple-50 flex flex-wrap gap-3">
+            <div className="bg-white/80 dark:bg-slate-900/80 rounded-2xl p-4 border border-purple-50 dark:border-purple-900/30 flex flex-wrap gap-3">
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Priority</label>
+                <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Priority</label>
                 <select
                   value={filterPriority}
                   onChange={(e) => setFilterPriority(e.target.value)}
-                  className="px-3 py-2 bg-purple-50 border border-purple-100 rounded-xl text-sm focus:outline-none"
+                  className="px-3 py-2 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
                 >
                   <option value="all">All</option>
                   <option value="high">High</option>
@@ -242,11 +263,11 @@ export default function Tasks() {
                 </select>
               </div>
               <div>
-                <label className="text-xs text-gray-500 mb-1 block">Status</label>
+                <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Status</label>
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-3 py-2 bg-purple-50 border border-purple-100 rounded-xl text-sm focus:outline-none"
+                  className="px-3 py-2 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
                 >
                   <option value="all">All</option>
                   <option value="pending">Pending</option>
@@ -314,7 +335,7 @@ export default function Tasks() {
                       </button>
 
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-medium truncate ${task.status === 'completed' ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+                        <p className={`text-sm font-medium truncate ${task.status === 'completed' ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-100'}`}>
                           {task.title}
                         </p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -324,7 +345,7 @@ export default function Tasks() {
                             </span>
                           )}
                           {task.due_date && (
-                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                            <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               {format(parseISO(task.due_date), 'MMM d')}
                             </span>
@@ -360,35 +381,33 @@ export default function Tasks() {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingTask ? 'Edit Task' : 'New Task'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Title</label>
-            <input
-              type="text"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              required
-              className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all"
-              placeholder="What needs to be done?"
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Title</label>
+                <input
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  required
+                  className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={3}
-              className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all resize-none"
-              placeholder="Add details..."
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Description</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all resize-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Priority</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Priority</label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
-                className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none"
+                className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -397,11 +416,11 @@ export default function Tasks() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Status</label>
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value as any })}
-                className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none"
+                className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
               >
                 <option value="pending">Pending</option>
                 <option value="in_progress">In Progress</option>
@@ -412,33 +431,32 @@ export default function Tasks() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
-              <input
-                type="text"
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all"
-                placeholder="e.g. Work, Personal"
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Category</label>
+                <input
+                  type="text"
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Due Date</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Due Date</label>
               <input
                 type="date"
                 value={form.due_date}
                 onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-                className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+                className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Project</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Project</label>
             <select
               value={form.project_id}
               onChange={(e) => setForm({ ...form, project_id: e.target.value })}
-              className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none"
+              className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
             >
               <option value="">No project</option>
               {projects.map((p) => (
@@ -451,7 +469,7 @@ export default function Tasks() {
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="flex-1 py-3 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-200 rounded-2xl text-sm font-medium hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>

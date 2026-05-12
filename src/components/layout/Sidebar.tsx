@@ -29,17 +29,17 @@ export default function Sidebar() {
   const location = useLocation();
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 h-screen bg-white/80 backdrop-blur-xl border-r border-purple-100/50 fixed left-0 top-0 z-40">
+    <aside className="hidden lg:flex flex-col w-64 h-screen bg-white/80 dark:bg-slate-950/90 backdrop-blur-xl border-r border-purple-100/50 dark:border-purple-900/30 fixed left-0 top-0 z-40">
       <div className="p-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-200">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-purple-900/40">
             <CheckSquare className="w-5 h-5 text-white" />
           </div>
           <div>
             <h1 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
               TaskFlow
             </h1>
-            <p className="text-xs text-gray-400">Premium Productivity</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Premium Productivity</p>
           </div>
         </div>
       </div>
@@ -74,10 +74,10 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-purple-50">
+      <div className="p-4 border-t border-purple-50 dark:border-purple-900/30">
         <button
           onClick={signOut}
-          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors w-full"
+          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full"
         >
           <LogOut className="w-5 h-5" />
           <span>Sign Out</span>

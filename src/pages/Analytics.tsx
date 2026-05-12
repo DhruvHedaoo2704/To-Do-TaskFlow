@@ -77,8 +77,8 @@ export default function Analytics() {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <motion.div variants={item} className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-        <p className="text-sm text-gray-500">Your productivity insights</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Analytics</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Your productivity insights</p>
       </motion.div>
 
       {/* Summary Cards */}
@@ -89,12 +89,12 @@ export default function Analytics() {
           { label: 'In Progress', value: inProgress, icon: Clock, color: 'from-blue-500 to-blue-600' },
           { label: 'Completion Rate', value: `${completionRate}%`, icon: TrendingUp, color: 'from-amber-500 to-amber-600' },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white/80 backdrop-blur-sm rounded-3xl p-5 border border-purple-50 shadow-lg shadow-purple-100/10">
+          <div key={stat.label} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl p-5 border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10">
             <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
               <stat.icon className="w-5 h-5 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{stat.label}</p>
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{stat.value}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">{stat.label}</p>
           </div>
         ))}
       </motion.div>
@@ -102,8 +102,8 @@ export default function Analytics() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Weekly Activity */}
-        <motion.div variants={item} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6">
-          <h3 className="text-base font-bold text-gray-800 mb-4">Weekly Activity</h3>
+        <motion.div variants={item} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6">
+          <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-4">Weekly Activity</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={weeklyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f0ff" />
@@ -119,8 +119,8 @@ export default function Analytics() {
         </motion.div>
 
         {/* Status Distribution */}
-        <motion.div variants={item} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6">
-          <h3 className="text-base font-bold text-gray-800 mb-4">Status Distribution</h3>
+        <motion.div variants={item} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6">
+          <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-4">Status Distribution</h3>
           {statusData.length > 0 ? (
             <div className="flex items-center justify-center">
               <ResponsiveContainer width="100%" height={250}>
@@ -135,11 +135,11 @@ export default function Analytics() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[250px] text-gray-400 text-sm">No data yet</div>
+            <div className="flex items-center justify-center h-[250px] text-gray-400 dark:text-gray-500 text-sm">No data yet</div>
           )}
           <div className="flex justify-center gap-4 mt-2">
             {statusData.map((d, i) => (
-              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
+              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                 {d.name}
               </div>
@@ -150,8 +150,8 @@ export default function Analytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Priority Breakdown */}
-        <motion.div variants={item} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6">
-          <h3 className="text-base font-bold text-gray-800 mb-4">Priority Breakdown</h3>
+        <motion.div variants={item} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6">
+          <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-4">Priority Breakdown</h3>
           {priorityData.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={priorityData} layout="vertical">
@@ -163,13 +163,13 @@ export default function Analytics() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">No data yet</div>
+            <div className="flex items-center justify-center h-[200px] text-gray-400 dark:text-gray-500 text-sm">No data yet</div>
           )}
         </motion.div>
 
         {/* Category Distribution */}
-        <motion.div variants={item} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6">
-          <h3 className="text-base font-bold text-gray-800 mb-4">Categories</h3>
+        <motion.div variants={item} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6">
+          <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-4">Categories</h3>
           {categoryData.length > 0 ? (
             <div className="space-y-3">
               {categoryData.map((cat, i) => {
@@ -177,8 +177,8 @@ export default function Analytics() {
                 return (
                   <div key={cat.name} className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                    <span className="text-sm text-gray-700 flex-1 capitalize">{cat.name}</span>
-                    <span className="text-sm font-medium text-gray-500">{cat.value}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-100 flex-1 capitalize">{cat.name}</span>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{cat.value}</span>
                     <div className="w-24 bg-gray-100 rounded-full h-2">
                       <motion.div
                         initial={{ width: 0 }}
@@ -188,16 +188,16 @@ export default function Analytics() {
                         style={{ backgroundColor: COLORS[i % COLORS.length] }}
                       />
                     </div>
-                    <span className="text-xs text-gray-400 w-8">{pct}%</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 w-8">{pct}%</span>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">No data yet</div>
+            <div className="flex items-center justify-center h-[200px] text-gray-400 dark:text-gray-500 text-sm">No data yet</div>
           )}
         </motion.div>
       </div>
-    </motion.div>
+      </motion.div>
   );
 }

@@ -119,8 +119,8 @@ export default function Projects() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-          <p className="text-sm text-gray-500">{projects.length} projects</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Projects</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{projects.length} projects</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -157,7 +157,7 @@ export default function Projects() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -4 }}
-                className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-purple-50 shadow-lg shadow-purple-100/10 hover:shadow-xl transition-all group"
+                className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl p-6 border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 hover:shadow-xl transition-all group"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div
@@ -167,26 +167,26 @@ export default function Projects() {
                     <FolderKanban className="w-6 h-6" style={{ color: project.color }} />
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => openEdit(project)} className="p-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-purple-500">
+                    <button onClick={() => openEdit(project)} className="p-1.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950/30 text-gray-400 dark:text-gray-300 hover:text-purple-500 dark:hover:text-purple-300">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => deleteProject(project.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500">
+                    <button onClick={() => deleteProject(project.id)} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 text-gray-400 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-300">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-gray-800 mb-1">{project.name}</h3>
+                <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-1">{project.name}</h3>
                 {project.description && (
-                  <p className="text-sm text-gray-400 mb-4 line-clamp-2">{project.description}</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-400 mb-4 line-clamp-2">{project.description}</p>
                 )}
 
                 <div className="flex items-center gap-3 mt-4">
-                  <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                  <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
                     <CheckSquare className="w-4 h-4" />
                     <span>{tc?.count || 0} tasks</span>
                   </div>
-                  <div className="flex-1 bg-gray-100 rounded-full h-2">
+                  <div className="flex-1 bg-gray-100 dark:bg-slate-800 rounded-full h-2">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
@@ -195,7 +195,7 @@ export default function Projects() {
                       style={{ backgroundColor: project.color }}
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-400">{progress}%</span>
+                  <span className="text-xs font-medium text-gray-400 dark:text-gray-500">{progress}%</span>
                 </div>
               </motion.div>
             );
@@ -206,30 +206,30 @@ export default function Projects() {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingProject ? 'Edit Project' : 'New Project'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Name</label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
-              className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all"
+              className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all"
               placeholder="Project name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Description</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
-              className="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all resize-none"
+              className="w-full px-4 py-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded-2xl text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600 transition-all resize-none"
               placeholder="What's this project about?"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Color</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Color</label>
             <div className="flex flex-wrap gap-2">
               {colorOptions.map((c) => (
                 <button
@@ -244,7 +244,7 @@ export default function Projects() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Icon</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Icon</label>
             <div className="flex flex-wrap gap-2">
               {iconOptions.map((ic) => (
                 <button
@@ -262,7 +262,7 @@ export default function Projects() {
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl text-sm font-medium hover:bg-gray-200 transition-colors">
+            <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-200 rounded-2xl text-sm font-medium hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
               Cancel
             </button>
             <motion.button

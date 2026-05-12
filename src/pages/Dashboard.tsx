@@ -57,6 +57,22 @@ export default function Dashboard() {
     e.stopPropagation(); // Prevents navigating to /tasks when checking the box
     const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
     
+    // Update local state immediately
+    const oldTask = tasks.find(t => t.id === taskId);
+    if (oldTask) {
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+      
+      // Update statistics
+      if (currentStatus === 'completed' && newStatus === 'pending') {
+        setCompletedTasks(prev => Math.max(0, prev - 1));
+        setInProgressTasks(prev => prev + 1);
+      } else if (currentStatus === 'pending' && newStatus === 'completed') {
+        setCompletedTasks(prev => prev + 1);
+        setInProgressTasks(prev => Math.max(0, prev - 1));
+      }
+    }
+    
+    // Update in Supabase
     const { error } = await supabase
       .from('tasks')
       .update({ 
@@ -65,8 +81,16 @@ export default function Dashboard() {
       })
       .eq('id', taskId);
 
-    if (!error) {
-      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+    if (error) {
+      // Revert if there's an error
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: currentStatus } : t));
+      if (currentStatus === 'completed' && newStatus === 'pending') {
+        setCompletedTasks(prev => prev + 1);
+        setInProgressTasks(prev => Math.max(0, prev - 1));
+      } else if (currentStatus === 'pending' && newStatus === 'completed') {
+        setCompletedTasks(prev => Math.max(0, prev - 1));
+        setInProgressTasks(prev => prev + 1);
+      }
     }
   };
 
@@ -134,10 +158,10 @@ export default function Dashboard() {
     >
       {/* Greeting */}
       <motion.div variants={item} className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
           {greeting}, <span className="bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent">{profile?.full_name || 'there'}</span>
         </h1>
-        <p className="text-gray-500 mt-1">{format(new Date(), 'EEEE, MMMM d, yyyy')}</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{format(new Date(), 'EEEE, MMMM d, yyyy')}</p>
       </motion.div>
 
       {/* Stats Cards */}
@@ -151,13 +175,13 @@ export default function Dashboard() {
           <motion.div
             key={stat.label}
             whileHover={{ y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl p-5 border border-purple-50 shadow-lg shadow-purple-100/10"
+            className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl p-5 border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10"
           >
             <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg ${stat.shadow}`}>
               <stat.icon className="w-5 h-5 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{stat.label}</p>
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{stat.value}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{stat.label}</p>
           </motion.div>
         ))}
       </motion.div>
@@ -198,20 +222,20 @@ export default function Dashboard() {
         </div>
 
         {/* Streak Card */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-purple-50 shadow-lg shadow-purple-100/10 flex flex-col items-center justify-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-4 shadow-lg shadow-orange-200/50">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl p-6 border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 flex flex-col items-center justify-center text-center">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-4 shadow-lg shadow-orange-200/50 dark:shadow-orange-900/30">
             <Flame className="w-7 h-7 text-white" />
           </div>
-          <p className="text-3xl font-bold text-gray-800">{profile?.streak_count || 0}</p>
-          <p className="text-sm text-gray-400 mt-1">Day Streak</p>
-          <p className="text-xs text-gray-300 mt-2">Keep it going!</p>
+          <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">{profile?.streak_count || 0}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Day Streak</p>
+          <p className="text-xs text-gray-300 dark:text-gray-400 mt-2">Keep it going!</p>
         </div>
       </motion.div>
 
       {/* Recent Tasks Section */}
       <motion.div variants={item}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Recent Tasks</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Recent Tasks</h2>
           <Link to="/tasks" className="text-sm text-purple-600 font-medium flex items-center gap-1 hover:underline">
             View all <ArrowRight className="w-4 h-4" />
           </Link>
@@ -230,7 +254,7 @@ export default function Dashboard() {
                 whileHover={{ x: 4 }}
                 // CARD CLICK: Navigates to the main tasks page
                 onClick={() => navigate('/tasks')}
-                className="cursor-pointer bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-50 shadow-sm hover:shadow-md transition-all flex items-center gap-4"
+                className="cursor-pointer bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-50 dark:border-purple-900/30 shadow-sm shadow-purple-100/10 dark:shadow-purple-900/10 hover:shadow-md transition-all flex items-center gap-4"
               >
                 {/* CHECKBOX BUTTON: Handles the toggle logic */}
                 <button
@@ -245,7 +269,7 @@ export default function Dashboard() {
                 </button>
 
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium text-gray-800 truncate ${task.status === 'completed' ? 'line-through text-gray-400' : ''}`}>
+                  <p className={`text-sm font-medium text-gray-800 dark:text-gray-100 truncate ${task.status === 'completed' ? 'line-through text-gray-400 dark:text-gray-500' : ''}`}>
                     {task.title}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
@@ -255,7 +279,7 @@ export default function Dashboard() {
                       </span>
                     )}
                     {task.due_date && (
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {formatDueDate(task.due_date)}
                       </span>

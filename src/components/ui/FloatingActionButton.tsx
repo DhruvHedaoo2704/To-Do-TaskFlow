@@ -23,7 +23,7 @@ export default function FloatingActionButton() {
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
             transition={{ delay: i * 0.05 }}
             onClick={() => { action.onClick(); setIsOpen(false); }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-2xl shadow-lg shadow-purple-100/50 border border-purple-100/50 text-sm font-medium text-gray-700 hover:shadow-xl transition-shadow"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-2xl shadow-lg shadow-purple-100/50 dark:shadow-purple-900/30 border border-purple-100 dark:border-purple-900/30 text-sm font-medium text-gray-700 dark:text-gray-100 hover:shadow-xl transition-shadow"
           >
             <action.icon className="w-4 h-4 text-purple-500" />
             {action.label}

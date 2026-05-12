@@ -11,30 +11,41 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
 
+  // Initialize theme from localStorage ONLY on first mount
   useEffect(() => {
-    if (user) {
-      supabase
-        .from('profiles')
-        .select('theme')
-        .eq('id', user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data?.theme) setTheme(data.theme as 'light' | 'dark');
-        });
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') {
+      setTheme(saved);
+      document.documentElement.classList.toggle('dark', saved === 'dark');
+    } else {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = isDark ? 'dark' : 'light';
+      setTheme(initialTheme);
+      localStorage.setItem('theme', initialTheme);
+      document.documentElement.classList.toggle('dark', isDark);
     }
-  }, [user]);
+    setMounted(true);
+  }, []);
 
+  // Update DOM when theme changes
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+    if (mounted) {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+    }
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    
+    // Sync to Supabase if user is authenticated
     if (user) {
-      supabase.from('profiles').update({ theme: newTheme }).eq('id', user.id).then(() => {});
+      supabase.from('profiles').update({ theme: newTheme }).eq('id', user.id).catch(() => {});
     }
   };
 

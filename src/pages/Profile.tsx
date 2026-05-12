@@ -88,15 +88,15 @@ export default function Profile() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-xl shadow-purple-100/10 overflow-hidden mb-6"
+        className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-xl shadow-purple-100/10 dark:shadow-purple-900/10 overflow-hidden mb-6"
       >
-        <div className="h-32 bg-gradient-to-br from-purple-500 to-purple-700 relative">
+        <div className="h-32 bg-gradient-to-br from-purple-500 to-purple-700 dark:from-purple-600 dark:to-purple-800 relative">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3N2Zz4=')] opacity-50" />
         </div>
 
         <div className="px-6 pb-6 -mt-12 relative">
           <div className="flex items-end gap-4 mb-6">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-300/40 border-4 border-white">
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-400 to-purple-600 dark:from-purple-500 dark:to-purple-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-300/40 dark:shadow-purple-900/40 border-4 border-white dark:border-gray-800">
               {initials}
             </div>
             <div className="flex-1 pb-1">
@@ -106,7 +106,7 @@ export default function Profile() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="px-3 py-2 bg-purple-50 border border-purple-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                    className="px-3 py-2 bg-purple-50 dark:bg-purple-900/30 border border-purple-100 dark:border-purple-800 rounded-xl text-sm dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-600"
                   />
                   <button onClick={saveProfile} className="p-2 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors">
                     <Save className="w-4 h-4" />
@@ -114,13 +114,13 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-gray-800">{profile?.full_name || 'Set your name'}</h2>
-                  <button onClick={() => setEditing(true)} className="p-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-purple-500 transition-colors">
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{profile?.full_name || 'Set your name'}</h2>
+                  <button onClick={() => setEditing(true)} className="p-1.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 text-gray-400 hover:text-purple-500 dark:text-gray-500 dark:hover:text-purple-400 transition-colors">
                     <Edit3 className="w-4 h-4" />
                   </button>
                 </div>
               )}
-              <p className="text-sm text-gray-400 flex items-center gap-1 mt-0.5">
+              <p className="text-sm text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-0.5">
                 <Mail className="w-3.5 h-3.5" /> {user?.email}
               </p>
             </div>
@@ -128,17 +128,17 @@ export default function Profile() {
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-purple-50/50 rounded-2xl">
-              <p className="text-xl font-bold text-gray-800">{taskStats.total}</p>
-              <p className="text-xs text-gray-400">Total Tasks</p>
+            <div className="text-center p-3 bg-purple-50/50 dark:bg-purple-900/20 rounded-2xl">
+              <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{taskStats.total}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Total Tasks</p>
             </div>
-            <div className="text-center p-3 bg-emerald-50/50 rounded-2xl">
-              <p className="text-xl font-bold text-gray-800">{taskStats.completed}</p>
-              <p className="text-xs text-gray-400">Completed</p>
+            <div className="text-center p-3 bg-emerald-50/50 dark:bg-emerald-900/20 rounded-2xl">
+              <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{taskStats.completed}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Completed</p>
             </div>
-            <div className="text-center p-3 bg-orange-50/50 rounded-2xl">
-              <p className="text-xl font-bold text-gray-800">{profile?.streak_count || 0}</p>
-              <p className="text-xs text-gray-400">Day Streak</p>
+            <div className="text-center p-3 bg-orange-50/50 dark:bg-orange-900/20 rounded-2xl">
+              <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{profile?.streak_count || 0}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Day Streak</p>
             </div>
           </div>
         </div>
@@ -149,16 +149,16 @@ export default function Profile() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6 mb-6"
+        className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6 mb-6"
       >
-        <h3 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <h3 className="text-base font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Award className="w-5 h-5 text-purple-500" /> Achievements
         </h3>
 
         {achievements.length === 0 ? (
           <div className="text-center py-8">
-            <Trophy className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-            <p className="text-sm text-gray-400">Complete tasks to earn achievements</p>
+            <Trophy className="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
+            <p className="text-sm text-gray-400 dark:text-gray-500">Complete tasks to earn achievements</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -169,13 +169,13 @@ export default function Profile() {
                 <motion.div
                   key={ach.id}
                   whileHover={{ scale: 1.05 }}
-                  className="flex flex-col items-center p-4 bg-purple-50/30 rounded-2xl"
+                  className="flex flex-col items-center p-4 bg-purple-50/30 dark:bg-purple-900/20 rounded-2xl"
                 >
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${info.color} flex items-center justify-center mb-2 shadow-lg`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-xs font-medium text-gray-700">{info.label}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{format(parseISO(ach.earned_at), 'MMM d')}</p>
+                  <p className="text-xs font-medium text-gray-700 dark:text-gray-300">{info.label}</p>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{format(parseISO(ach.earned_at), 'MMM d')}</p>
                 </motion.div>
               );
             })}
@@ -188,12 +188,12 @@ export default function Profile() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6"
+        className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6"
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-gray-800">Appearance</h3>
-            <p className="text-sm text-gray-400">Toggle between light and dark mode</p>
+            <h3 className="text-base font-bold text-gray-800 dark:text-gray-100">Appearance</h3>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Toggle between light and dark mode</p>
           </div>
           <button
             onClick={toggleTheme}

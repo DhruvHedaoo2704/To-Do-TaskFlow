@@ -59,13 +59,13 @@ export default function CalendarPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-        <p className="text-sm text-gray-500">Plan your schedule</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Calendar</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Plan your schedule</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Calendar Grid */}
-        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 p-6">
+        <div className="lg:col-span-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 p-6">
           {/* Month Navigation */}
           <div className="flex items-center justify-between mb-6">
             <button
@@ -74,7 +74,7 @@ export default function CalendarPage() {
             >
               <ChevronLeft className="w-5 h-5 text-purple-600" />
             </button>
-            <h2 className="text-lg font-bold text-gray-800">{format(currentMonth, 'MMMM yyyy')}</h2>
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">{format(currentMonth, 'MMMM yyyy')}</h2>
             <button
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
               className="w-10 h-10 rounded-xl bg-purple-50 hover:bg-purple-100 flex items-center justify-center transition-colors"
@@ -109,10 +109,10 @@ export default function CalendarPage() {
                     isSelected
                       ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-200/50'
                       : isToday(d)
-                      ? 'bg-purple-50 text-purple-600'
+                      ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-600'
                       : isCurrentMonth
-                      ? 'text-gray-700 hover:bg-purple-50/50'
-                      : 'text-gray-300'
+                      ? 'text-gray-700 dark:text-gray-200 hover:bg-purple-50/50 dark:hover:bg-purple-950/40'
+                      : 'text-gray-300 dark:text-gray-500'
                   }`}
                 >
                   <span>{format(d, 'd')}</span>

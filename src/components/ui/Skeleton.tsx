@@ -16,7 +16,7 @@ export function Skeleton({ className = '' }: SkeletonProps) {
 
 export function TaskCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl p-4 border border-purple-50 space-y-3">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-purple-50 dark:border-purple-900/30 space-y-3">
       <div className="flex items-center gap-3">
         <Skeleton className="w-5 h-5 rounded-full" />
         <Skeleton className="h-4 w-3/4" />

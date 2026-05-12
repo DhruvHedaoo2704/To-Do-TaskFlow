@@ -28,7 +28,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50/30 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-200/20 to-purple-400/5 rounded-full blur-3xl -top-48" />
 
       <motion.div
@@ -42,14 +42,14 @@ export default function Login() {
               <CheckSquare className="w-6 h-6 text-white" />
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-gray-500 mt-1">Sign in to continue to TaskFlow</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Welcome back</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Sign in to continue to TaskFlow</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-purple-200/20 border border-purple-100/50 p-8">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-purple-200/20 dark:shadow-purple-900/20 border border-purple-100/50 dark:border-purple-900/30 p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
                 <input
@@ -64,7 +64,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
                 <input
@@ -90,7 +90,7 @@ export default function Login() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
           Don't have an account?{' '}
           <Link to="/register" className="text-purple-600 font-medium hover:underline">
             Sign up

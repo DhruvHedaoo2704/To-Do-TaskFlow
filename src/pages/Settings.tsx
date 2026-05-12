@@ -58,10 +58,10 @@ export default function Settings() {
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto min-h-screen bg-white dark:bg-gray-950">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-sm text-gray-500">Manage your preferences</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Manage your preferences</p>
       </motion.div>
 
       <div className="space-y-6">
@@ -71,22 +71,22 @@ export default function Settings() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: gi * 0.1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-50 shadow-lg shadow-purple-100/10 overflow-hidden"
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border border-purple-50 dark:border-purple-900/30 shadow-lg shadow-purple-100/10 dark:shadow-purple-900/10 overflow-hidden"
           >
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider px-6 pt-5 pb-2">
+            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-6 pt-5 pb-2">
               {group.title}
             </h3>
             {group.items.map((setting) => (
               <div
                 key={setting.label}
-                className="flex items-center gap-4 px-6 py-4 hover:bg-purple-50/30 transition-colors"
+                className="flex items-center gap-4 px-6 py-4 hover:bg-purple-50/30 dark:hover:bg-purple-900/20 transition-colors"
               >
-                <div className="w-10 h-10 rounded-2xl bg-purple-50 flex items-center justify-center flex-shrink-0">
-                  <setting.icon className="w-5 h-5 text-purple-500" />
+                <div className="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                  <setting.icon className="w-5 h-5 text-purple-500 dark:text-purple-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800">{setting.label}</p>
-                  <p className="text-xs text-gray-400">{setting.description}</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{setting.label}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{setting.description}</p>
                 </div>
                 {setting.action}
               </div>
@@ -105,14 +105,14 @@ export default function Settings() {
             await signOut();
             addToast('Signed out', 'info');
           }}
-          className="w-full flex items-center gap-4 px-6 py-4 bg-white/80 backdrop-blur-sm rounded-3xl border border-red-100 shadow-lg shadow-red-100/10 text-red-500 hover:bg-red-50/50 transition-colors"
+          className="w-full flex items-center gap-4 px-6 py-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-3xl border border-red-100 dark:border-red-900/30 shadow-lg shadow-red-100/10 dark:shadow-red-900/10 text-red-500 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-colors"
         >
-          <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
             <LogOut className="w-5 h-5" />
           </div>
           <div className="text-left">
             <p className="text-sm font-medium">Sign Out</p>
-            <p className="text-xs text-gray-400">Sign out of your account</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Sign out of your account</p>
           </div>
         </motion.button>
       </div>

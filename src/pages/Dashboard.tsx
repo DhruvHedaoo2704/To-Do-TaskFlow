@@ -12,9 +12,10 @@ import {
   Flame,
   Calendar,
   ArrowRight,
+  Check,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { format, isToday, isTomorrow, parseISO } from 'date-fns';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface Task {
   id: string;
@@ -50,6 +51,24 @@ export default function Dashboard() {
   const [completedTasks, setCompletedTasks] = useState(0);
   const [inProgressTasks, setInProgressTasks] = useState(0);
   const [todayTasks, setTodayTasks] = useState(0);
+  const navigate = useNavigate(); // Initialize navigation
+
+  const handleToggleStatus = async (e: React.MouseEvent, taskId: string, currentStatus: string) => {
+    e.stopPropagation(); // Prevents navigating to /tasks when checking the box
+    const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+    
+    const { error } = await supabase
+      .from('tasks')
+      .update({ 
+        status: newStatus,
+        completed_at: newStatus === 'completed' ? new Date().toISOString() : null 
+      })
+      .eq('id', taskId);
+
+    if (!error) {
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -91,8 +110,6 @@ export default function Dashboard() {
     return 'Good evening';
   })();
 
-  const pendingTasks = tasks.filter((t) => t.status !== 'completed');
-
   const priorityColor = (p: string) => {
     if (p === 'high') return 'bg-red-100 text-red-600';
     if (p === 'medium') return 'bg-amber-100 text-amber-600';
@@ -108,6 +125,7 @@ export default function Dashboard() {
   };
 
   return (
+    <>
     <motion.div
       variants={container}
       initial="hidden"
@@ -190,7 +208,7 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Recent Tasks */}
+      {/* Recent Tasks Section */}
       <motion.div variants={item}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800">Recent Tasks</h2>
@@ -199,30 +217,37 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {pendingTasks.length === 0 ? (
-          <EmptyState
-            icon={CheckSquare}
-            title="No tasks yet"
-            description="Create your first task to get started"
-            actionLabel="Create Task"
-            onAction={() => {}}
-          />
+        {tasks.length === 0 ? (
+          <EmptyState icon={CheckSquare} title="No tasks yet" description="Create your first task to get started" />
         ) : (
           <div className="space-y-3">
-            {pendingTasks.map((task, i) => (
+            {tasks.slice(0, 6).map((task, i) => (
               <motion.div
                 key={task.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ x: 4 }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-50 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4"
+                // CARD CLICK: Navigates to the main tasks page
+                onClick={() => navigate('/tasks')}
+                className="cursor-pointer bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-purple-50 shadow-sm hover:shadow-md transition-all flex items-center gap-4"
               >
-                <div className={`w-5 h-5 rounded-lg border-2 flex-shrink-0 ${
-                  task.status === 'completed' ? 'bg-purple-500 border-purple-500' : 'border-purple-200'
-                }`} />
+                {/* CHECKBOX BUTTON: Handles the toggle logic */}
+                <button
+                  onClick={(e) => handleToggleStatus(e, task.id, task.status)}
+                  className={`w-5 h-5 rounded-lg border-2 flex-shrink-0 transition-colors flex items-center justify-center ${
+                    task.status === 'completed' 
+                      ? 'bg-purple-500 border-purple-500' 
+                      : 'border-purple-200 hover:border-purple-400'
+                  }`}
+                >
+                  {task.status === 'completed' && <Check className="w-3 h-3 text-white" />}
+                </button>
+
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800 truncate">{task.title}</p>
+                  <p className={`text-sm font-medium text-gray-800 truncate ${task.status === 'completed' ? 'line-through text-gray-400' : ''}`}>
+                    {task.title}
+                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     {task.projects && (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: task.projects.color + '20', color: task.projects.color }}>
@@ -246,5 +271,6 @@ export default function Dashboard() {
         )}
       </motion.div>
     </motion.div>
+    </>
   );
 }

@@ -45,7 +45,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     
     // Sync to Supabase if user is authenticated
     if (user) {
-      supabase.from('profiles').update({ theme: newTheme }).eq('id', user.id).catch(() => {});
+      supabase.from('profiles').update({ theme: newTheme }).eq('id', user.id).match(() => {});
     }
   };
 
